@@ -8,7 +8,8 @@ class Game:
         self.surface = pygame.display.set_mode((self.height, self.weidth))
     def new(self):
         self.fps = pygame.time.Clock() 
-        self.player = Playerellipse(10,10,10)
+        self.player = Playerellipse()
+        self.coordplayer = self.player.coordinats
         self.group = Group()
         self.test_event = pygame.USEREVENT
         pygame.time.set_timer(self.test_event, 5000)
@@ -16,13 +17,11 @@ class Game:
         events = pygame.event.get()
         stop = 1
         for e_now in events:
-            if e_now.type == pygame.constants.QUIT:
-                stop = -1
             if e_now.type == self.test_event:
-                evil = Evilellipse(10,10,10)
+                evil = Evilellipse(self.coordplayer)
                 self.group.append(evil)
-            else:
-                stop = 1
+            if e_now.type == pygame.constants.QUIT:
+                stop = 0
         return stop
     def update(self):
         pygame.display.update()
@@ -34,17 +33,17 @@ class Game:
         self.group.draw(self.surface)
 
     def first_draw(self):
-        evil = Evilellipse(10,10,10)
+        evil = Evilellipse(self.coordplayer)
         self.group.append(evil)
 
     def run(self):
-        skolko = random.randint(1,6)
+        skolko = random.randint(1,29)
         f =1
         stop = 1
         self.new()
         while f<=skolko:
             self.first_draw()
-            f=+1
+            f+=1
         while stop > 0:
             stop = self.events()
             self.drawing()
