@@ -16,26 +16,28 @@ class ellise(pygame.sprite.Sprite):
 class Playerellipse(ellise):
     def __init__(self) -> None:
         self.size = random.randint(10,15)
-        self.speedy = random.randint(-2,2)
-        self.speedx = random.randint(-2,2)
-        self.coordinats = DIFERENT[random.randint(0,3)]
-        self.color = random.randint(0,len(COLOURS)-1)
+        self.coordinats = [WEIDTH//2,HEIGHT//2]
+        self.color = COLOURS[random.randint(0,len(COLOURS)-1)]
         self.rect = pygame.rect.Rect(self.coordinats[0], self.coordinats[-1],self.size, self.size)
         self.rect.center = [self.coordinats[0], self.coordinats[-1]]
         
     def draw(self,surface):
         pygame.draw.ellipse(surface,self.color,self.rect)
-    def update(self):
-        pass
+    def update(self,mousecord):
+
+        print(list(mousecord))
+        self.rect.center = list(mousecord)
+        
 
 class Evilellipse(ellise):
     def __init__(self,coordplayer) -> None:
         self.size = random.randint(10,100)
-        self.speedy = random.randint(-2,2)
-        self.speedx = random.randint(-2,2)
+        self.speedy = 0
+        self.speedx = 0
         self.coordplayer = coordplayer
         self.coordinatx = 0
         self.coordinaty = 0
+        self.walls = random.randint(1,4)
         self.colliders()
         self.color = COLOURS[random.randint(0,len(COLOURS)-1)]
         self.rect = pygame.rect.Rect(self.coordinatx, self.coordinaty,self.size, self.size)
@@ -43,18 +45,26 @@ class Evilellipse(ellise):
         self.groups = []
         
     def colliders(self):
-        if self.coordplayer == DIFERENT[0]:
-            self.coordinatx = random.randint(0, WEIDTH -1) 
-            self.coordinaty = random.randint(0, DIFERENT[1][-1] -1) 
-        if self.coordplayer == DIFERENT[1]:
-            self.coordinatx = random.randint(0, WEIDTH -1) 
-            self.coordinaty = random.randint(DIFERENT[0][-1] -1,HEIGHT -1) 
-        if self.coordplayer == DIFERENT[2]:
-            self.coordinatx = random.randint(0, DIFERENT[3][0]-1) 
-            self.coordinaty = random.randint(0, HEIGHT-1) 
-        if self.coordplayer == DIFERENT[3]:
-            self.coordinatx = random.randint(DIFERENT[2][0]-1,WEIDTH - 1 ) 
-            self.coordinaty = random.randint(0, HEIGHT-1) 
+        if self.walls == 1: #left
+            self.coordinatx = 0
+            self.coordinaty = random.randint(0,HEIGHT-1) 
+            self.speedx = random.randint(1,2)
+            self.speedy = random.choice([random.randint(-2,-1),random.randint(1,2)])
+        if self.walls == 2: #right
+            self.coordinatx = WEIDTH - 1
+            self.coordinaty = random.randint(0,HEIGHT-1) 
+            self.speedx = random.randint(-2,-1)
+            self.speedy = random.choice([random.randint(-2,-1),random.randint(1,2)])
+        if self.walls == 3: #up
+            self.coordinatx = random.randint(0,WEIDTH-1) 
+            self.coordinaty = 0
+            self.speedx = random.choice([random.randint(-2,-1),random.randint(1,2)])
+            self.speedy = random.randint(1,2) 
+        if self.walls == 4: #down
+            self.coordinatx = random.randint(0,WEIDTH-1) 
+            self.coordinaty = HEIGHT-1
+            self.speedx = random.choice([random.randint(-2,-1),random.randint(1,2)])
+            self.speedy = random.randint(-2,-1) 
         
         
 
@@ -77,3 +87,7 @@ class Group(list):
     def append(self, a):
         super().append(a)
         a.groups.append(self)
+    def delete(self,playerrect):
+        for t in self:
+            if pygame.Rect.colliderect(t.rect, playerrect):
+                self.remove(t)

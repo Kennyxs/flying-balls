@@ -12,7 +12,8 @@ class Game:
         self.coordplayer = self.player.coordinats
         self.group = Group()
         self.test_event = pygame.USEREVENT
-        pygame.time.set_timer(self.test_event, 5000)
+        pygame.time.set_timer(self.test_event, 2000)
+        self.mousecord = []
     def events(self):
         events = pygame.event.get()
         stop = 1
@@ -20,12 +21,18 @@ class Game:
             if e_now.type == self.test_event:
                 evil = Evilellipse(self.coordplayer)
                 self.group.append(evil)
+            if e_now.type == pygame.MOUSEBUTTONDOWN:
+                # self.mousecord = pygame.mouse.get_pos
+                self.mousecord = e_now.pos
+                self.player.update(self.mousecord)
+                print(self.mousecord)
             if e_now.type == pygame.constants.QUIT:
                 stop = 0
         return stop
     def update(self):
         pygame.display.update()
         self.group.update()
+        
 
     def drawing(self):
         self.surface.fill((0,0,0))
@@ -48,6 +55,7 @@ class Game:
             stop = self.events()
             self.drawing()
             self.update()
+            self.group.delete(self.player.rect)
             self.fps.tick(60)
 
 
