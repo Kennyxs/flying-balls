@@ -14,20 +14,19 @@ class ellise(pygame.sprite.Sprite):
         pass
 
 class Playerellipse(ellise):
-    def __init__(self) -> None:
-        self.size = random.randint(10,15)
+    def __init__(self,color = WHITE) -> None:
+        self.size = random.randint(10,20)
         self.coordinats = [WEIDTH//2,HEIGHT//2]
-        self.color = COLOURS[random.randint(0,len(COLOURS)-1)]
+        self.color = color
         self.rect = pygame.rect.Rect(self.coordinats[0], self.coordinats[-1],self.size, self.size)
         self.rect.center = [self.coordinats[0], self.coordinats[-1]]
         
     def draw(self,surface):
         pygame.draw.ellipse(surface,self.color,self.rect)
     def update(self,mousecord):
-
-        print(list(mousecord))
+        # print(list(mousecord))
         self.rect.center = list(mousecord)
-        
+    
 
 class Evilellipse(ellise):
     def __init__(self,coordplayer) -> None:
@@ -43,6 +42,7 @@ class Evilellipse(ellise):
         self.rect = pygame.rect.Rect(self.coordinatx, self.coordinaty,self.size, self.size)
         self.rect.center = [self.coordinatx, self.coordinaty]
         self.groups = []
+        self.gameon = 1
         
     def colliders(self):
         if self.walls == 1: #left
@@ -76,6 +76,7 @@ class Evilellipse(ellise):
 
 class Group(list):
     def __init__(self, *sprites):
+        self.stop = 1
         super().__init__(sprites)
     def update(self):
         for up in self:
@@ -87,7 +88,21 @@ class Group(list):
     def append(self, a):
         super().append(a)
         a.groups.append(self)
-    def delete(self,playerrect):
+    def delete(self,playerrect): 
+            #playerrect,playersize
+        sizeup = 0
         for t in self:
             if pygame.Rect.colliderect(t.rect, playerrect):
-                self.remove(t)
+                if playerrect.height > t.rect.height:
+                    print("collide")
+                    sizeup = t.size//4
+                    self.remove(t)
+                else:
+                    self.stop=0
+                    print('lose')
+        return sizeup
+             
+                    
+
+
+                
