@@ -36,6 +36,7 @@ class Game:
         self.mousecord = pygame.mouse.get_pos()
         self.player.update(self.mousecord)
 
+
     def drawing(self):
         self.surface.fill((0,0,0))
         self.player.draw(self.surface)
@@ -54,7 +55,16 @@ class Game:
         self.player = Playerellipse()
         self.group.clear()
         self.first_draw()
-
+    def recplayer(self):
+        shriftss = pygame.freetype.Font(None, 20 )
+        recnow = f'{NAME}:{RECORD}'
+        shriftss.render_to(self.surface, (150, 10), recnow, WHITE)        
+    def five(self,spisok):
+        shriftss = pygame.freetype.Font(None, 20 )
+        y = 200 
+        for t in spisok:
+            shriftss.render_to(self.surface, (50, y), t.__repr__(), WHITE)
+            y += 30
         
 
     def menuu(self):
@@ -87,8 +97,8 @@ class Game:
             self.surface.fill(BLUE)
             shrift.render_to(self.surface,(40,40),"Play",  colorr)
             shrift.render_to(self.surface,(40,90),"Quit", color )
-            
-            
+            self.five(TOP)
+            self.recplayer()
             # self.surface.blit(renderr, [10,10])
             # self.surface.blit(render, [60,60])
             pygame.display.update()
@@ -116,7 +126,9 @@ class Game:
             if self.group.stop != 1 or self.win_lose() !=1:
                 stop = self.menuu()
                 self.remenurer()
-                
+                print(self.player.size)
+                self.player.record()
+
             sizeup = self.group.delete(self.player.rect)
             self.player.rect.width +=sizeup
             self.player.rect.height +=sizeup

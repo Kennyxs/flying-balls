@@ -26,7 +26,9 @@ class Playerellipse(ellise):
     def update(self,mousecord):
         # print(list(mousecord))
         self.rect.center = list(mousecord)
-    
+    def record(self):
+        if self.size > RECORD:
+            update(NAME,self.size)
 
 class Evilellipse(ellise):
     def __init__(self,coordplayer) -> None:
@@ -100,6 +102,7 @@ class Group(list):
                 else:
                     self.stop=0
                     print('lose')
+                    
         return sizeup
              
                     
